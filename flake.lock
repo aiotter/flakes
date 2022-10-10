@@ -1,0 +1,60 @@
+{
+  "nodes": {
+    "flake-utils": {
+      "locked": {
+        "lastModified": 1659877975,
+        "narHash": "sha256-zllb8aq3YO3h8B/U0/J1WBgAL8EX5yWf5pMj3G0NAmc=",
+        "owner": "numtide",
+        "repo": "flake-utils",
+        "rev": "c0e246b9b83f637f4681389ecabcb2681b4f3af0",
+        "type": "github"
+      },
+      "original": {
+        "owner": "numtide",
+        "repo": "flake-utils",
+        "type": "github"
+      }
+    },
+    "nixpkgs": {
+      "locked": {
+        "lastModified": 1665296151,
+        "narHash": "sha256-uOB0oxqxN9K7XGF1hcnY+PQnlQJ+3bP2vCn/+Ru/bbc=",
+        "owner": "NixOS",
+        "repo": "nixpkgs",
+        "rev": "14ccaaedd95a488dd7ae142757884d8e125b3363",
+        "type": "github"
+      },
+      "original": {
+        "id": "nixpkgs",
+        "ref": "nixpkgs-unstable",
+        "type": "indirect"
+      }
+    },
+    "root": {
+      "inputs": {
+        "flake-utils": "flake-utils",
+        "nixpkgs": "nixpkgs",
+        "youtube-dl": "youtube-dl"
+      }
+    },
+    "youtube-dl": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1664880188,
+        "narHash": "sha256-SgTHgyiERlwA8FInejrm3ozROJ5idVkP4UbNSL8ADus=",
+        "owner": "ytdl-org",
+        "repo": "youtube-dl",
+        "rev": "d35557a75d943865e40410d51bfcc18276e98532",
+        "type": "github"
+      },
+      "original": {
+        "owner": "ytdl-org",
+        "ref": "master",
+        "repo": "youtube-dl",
+        "type": "github"
+      }
+    }
+  },
+  "root": "root",
+  "version": 7
+}
