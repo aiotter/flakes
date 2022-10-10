@@ -4,9 +4,8 @@ Each branches stores each flake.
 
 ## Development
 
-Recommended way:
-
 ```bash
 $ git clone https://github.com/aiotter/flakes
-$ git worktree add blesh
+$ make blesh  # checkout `blesh` branch under `blesh` directory
+$ make new-branch  # create new orphan branch checked out under new directory
 ```
