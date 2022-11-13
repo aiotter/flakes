@@ -21,11 +21,18 @@
     } // flake-utils.lib.eachSystem darwinSystems (system:
       let
         pkgs = import nixpkgs { inherit system; };
+        getVersion = source: with source;
+          pkgs.lib.concatStringsSep "-" [
+            "unstable"
+            (builtins.substring 0 4 lastModifiedDate)
+            (builtins.substring 4 2 lastModifiedDate)
+            (builtins.substring 6 2 lastModifiedDate)
+          ];
       in
       {
         packages.default = pkgs.stdenv.mkDerivation rec {
           pname = "iproute2mac";
-          version = with iproute2mac; "unstable-${builtins.substring 0 4 lastModifiedDate}-${builtins.substring 4 2 lastModifiedDate}-${builtins.substring 6 2 lastModifiedDate}";
+          version = getVersion iproute2mac;
           src = iproute2mac;
 
           buildInputs = [ pkgs.python3 ];
