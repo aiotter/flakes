@@ -39,7 +39,8 @@ stdenv.mkDerivation rec {
 
   preBuild =
     let
-      arch = (lib.systems.parse.mkSystemFromString system).cpu.name;
+      systemCpuName = (lib.systems.parse.mkSystemFromString system).cpu.name;
+      arch = if systemCpuName == "aarch64" then "arm64" else systemCpuName;
     in
     lib.optionals stdenv.isDarwin ''
       makeFlagsArray+=(SYSTEM_CFLAGS="-arch ${arch}" SYSTEM_LDFLAGS="-arch ${arch}")
