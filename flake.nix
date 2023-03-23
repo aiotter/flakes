@@ -24,7 +24,7 @@
         rec {
           packages.default = pythonPackage.buildPythonPackage rec {
             pname = "youtube-dl";
-            version = with youtube-dl; "unstable-${builtins.substring 0 4 lastModifiedDate}-${builtins.substring 4 2 lastModifiedDate}-${builtins.substring 6 2 lastModifiedDate}";
+            version = with youtube-dl; "${builtins.substring 0 4 lastModifiedDate}.${builtins.substring 4 2 lastModifiedDate}.${builtins.substring 6 2 lastModifiedDate}+unstable.${youtube-dl.shortRev}";
             src = youtube-dl;
 
             patches = [
@@ -35,7 +35,7 @@
                  from __future__ import unicode_literals
 
                 -__version__ = '2021.12.17'
-                +__version__ = '${version} (${youtube-dl.shortRev})'
+                +__version__ = '${version}'
               '')
             ];
 
