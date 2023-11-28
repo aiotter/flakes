@@ -2,23 +2,23 @@
 
 stdenv.mkDerivation rec {
   pname = "pivy";
-  version = "v0.10.0";
+  version = "v0.11.2";
   srcs = [
     (fetchFromGitHub {
       owner = "arekinath";
       repo = "pivy";
       rev = version;
-      hash = "sha256-y82zbgB9HmXxUvmo/h5Emys+6b2FztC/abzp7Cc4i8Q=";
+      hash = "sha256-FEIIZTtFXN+vBz/kVsRIgj1vSJ/m8vcug1mVBLgTbnU=";
     })
     (fetchurl rec {
-      version = "8.9p1";
+      version = "9.5p1";
       url = "mirror://openbsd/OpenSSH/portable/openssh-${version}.tar.gz";
-      hash = "sha256-/Ul2VLerFobaxnL7g9+0ukCW6LX/zazNJiOArli+xec=";
+      hash = "sha256-8Cbnt5un+1QPdRgq+W3IqPHbOV+SK7yfbKYDZyaGCGs=";
     })
     (fetchurl rec {
-      version = "3.5.2";
+      version = "3.8.2";
       url = "mirror://openbsd/LibreSSL/libressl-${version}.tar.gz";
-      hash = "sha256-Vv6rjiHD+mVJ+LfXURZYuOmFGBYoOKeVMUcyZUrfPl8=";
+      hash = "sha256-bUuNW7slofgzZjnlbsUIgFLUOpUlZpeoXEzpEyPCWVQ=";
     })
   ];
 
