@@ -5,17 +5,18 @@
     nixpkgs.url = "nixpkgs/nixpkgs-unstable";
   };
 
-  outputs = { self, nixpkgs, flake-utils }:
+  outputs = { self, nixpkgs }:
     let
-      forSystems = with nixpkgs.lib; systems: f: genAttrs systems (system: f system);
-      forAllSystems = f: forSystems nixpkgs.lib.systems.flakeExposed;
+      forSystems = systems: f:
+        builtins.foldl' (attrs: system: nixpkgs.lib.recursiveUpdate attrs (f system)) { } systems;
+      forAllSystems = forSystems nixpkgs.lib.systems.flakeExposed;
     in
     forAllSystems (system:
       let
         pkgs = import nixpkgs { inherit system; };
       in
       {
-        packages.default = pkgs.stdenv.mkDerivation rec {
+        packages.${system}.default = pkgs.stdenv.mkDerivation rec {
           pname = "";
           version = "";
           src = pkgs.fetchurl { };
