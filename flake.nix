@@ -25,9 +25,16 @@
         version = getVersion pyenv;
         src = pyenv;
         sourceRoot = "source/plugins/python-build";
-        buildInputs = with pkgs; [ bash ];
+        buildInputs = pkgs.python3.buildInputs;
+        nativeBuildInputs = [pkgs.makeWrapper];
         installPhase = ''
           PREFIX=$out ./install.sh
+          wrapProgram $out/bin/python-build \
+            --set PYTHON_BUILD_SKIP_HOMEBREW 1 \
+            --set PYTHON_CONFIGURE_OPTS "${pkgs.lib.concatStringsSep " " pkgs.python3.configureFlags}" \
+            --set CPPFLAGS "${pkgs.python3.CPPFLAGS}" \
+            --set LDFLAGS "${pkgs.python3.LDFLAGS}" \
+            --set LIBS "${pkgs.python3.LIBS}"
         '';
       });
     });
