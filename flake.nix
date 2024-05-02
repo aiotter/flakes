@@ -25,7 +25,7 @@
         version = getVersion pyenv;
         src = pyenv;
         sourceRoot = "source/plugins/python-build";
-        buildInputs = with pkgs; [ bash ];
+        buildInputs = with pkgs; [ bash readline zlib openssl gcc gnumake ];
         installPhase = ''
           PREFIX=$out ./install.sh
         '';
