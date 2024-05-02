@@ -1,0 +1,7 @@
+on: [push]
+
+jobs:
+  cache:
+    uses: aiotter/flakes/.github/workflows/cache.yml@master
+    secrets:
+      cachix-auth-token: ${{ secrets.CACHIX_AUTH_TOKEN }}
