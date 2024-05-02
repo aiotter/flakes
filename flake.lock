@@ -1,0 +1,46 @@
+{
+  "nodes": {
+    "nixpkgs": {
+      "locked": {
+        "lastModified": 1714314149,
+        "narHash": "sha256-yNAevSKF4krRWacmLUsLK7D7PlfuY3zF0lYnGYNi9vQ=",
+        "owner": "NixOS",
+        "repo": "nixpkgs",
+        "rev": "cf8cc1201be8bc71b7cbbbdaf349b22f4f99c7ae",
+        "type": "github"
+      },
+      "original": {
+        "id": "nixpkgs",
+        "ref": "nixpkgs-unstable",
+        "type": "indirect"
+      }
+    },
+    "root": {
+      "inputs": {
+        "nixpkgs": "nixpkgs",
+        "rust": "rust"
+      }
+    },
+    "rust": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1714504620,
+        "narHash": "sha256-1DMQrM+fSLiH9BOlewt96U/uc+hJ6JiX6fqbAyqfDaA=",
+        "ref": "refs/heads/esp-1.78.0.0",
+        "rev": "27aaf29f720afdb7696cee701f1f67525cf74349",
+        "shallow": true,
+        "submodules": true,
+        "type": "git",
+        "url": "https://github.com/esp-rs/rust"
+      },
+      "original": {
+        "shallow": true,
+        "submodules": true,
+        "type": "git",
+        "url": "https://github.com/esp-rs/rust"
+      }
+    }
+  },
+  "root": "root",
+  "version": 7
+}
