@@ -16,9 +16,10 @@
     let
       forSystems = systems: f:
         builtins.foldl' (attrs: system: nixpkgs.lib.recursiveUpdate attrs (f system)) { } systems;
-      forAllSystems = forSystems nixpkgs.lib.systems.flakeExposed;
+      rustPlatforms = nixpkgs.outputs.legacyPackages.x86_64-linux.rustc.meta.platforms;
+      targetPlatforms = with nixpkgs.lib; intersectLists systems.flakeExposed rustPlatforms;
     in
-    forAllSystems (system:
+    forSystems targetPlatforms (system:
       let
         pkgs = import nixpkgs { inherit system; };
         rustPackages = pkgs.rustPackages_1_77;
