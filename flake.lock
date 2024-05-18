@@ -1,27 +1,23 @@
 {
   "nodes": {
-    "nixpkgs": {
+    "esp-llvm": {
+      "flake": false,
       "locked": {
-        "lastModified": 1714314149,
-        "narHash": "sha256-yNAevSKF4krRWacmLUsLK7D7PlfuY3zF0lYnGYNi9vQ=",
-        "owner": "NixOS",
-        "repo": "nixpkgs",
-        "rev": "cf8cc1201be8bc71b7cbbbdaf349b22f4f99c7ae",
+        "lastModified": 1713531168,
+        "narHash": "sha256-gqsj9I3ZKW9JHMT0JphUSiQ9cmOBx75WJKz7vY4BiC4=",
+        "owner": "espressif",
+        "repo": "llvm-project",
+        "rev": "829c5adc936d229d5a154e9a4b6acc2ff6e6f34b",
         "type": "github"
       },
       "original": {
-        "id": "nixpkgs",
-        "ref": "nixpkgs-unstable",
-        "type": "indirect"
+        "owner": "espressif",
+        "ref": "esp-17.0.1_20240419",
+        "repo": "llvm-project",
+        "type": "github"
       }
     },
-    "root": {
-      "inputs": {
-        "nixpkgs": "nixpkgs",
-        "rust": "rust"
-      }
-    },
-    "rust": {
+    "esp-rust": {
       "flake": false,
       "locked": {
         "lastModified": 1714504620,
@@ -38,6 +34,28 @@
         "submodules": true,
         "type": "git",
         "url": "https://github.com/esp-rs/rust"
+      }
+    },
+    "nixpkgs": {
+      "locked": {
+        "lastModified": 1715499532,
+        "narHash": "sha256-9UJLb8rdi2VokYcfOBQHUzP3iNxOPNWcbK++ENElpk0=",
+        "owner": "NixOS",
+        "repo": "nixpkgs",
+        "rev": "af8b9db5c00f1a8e4b83578acc578ff7d823b786",
+        "type": "github"
+      },
+      "original": {
+        "id": "nixpkgs",
+        "ref": "nixpkgs-unstable",
+        "type": "indirect"
+      }
+    },
+    "root": {
+      "inputs": {
+        "esp-llvm": "esp-llvm",
+        "esp-rust": "esp-rust",
+        "nixpkgs": "nixpkgs"
       }
     }
   },
