@@ -3,7 +3,7 @@ with lib; {
   llvmVersionFromCMakeLists = file:
     let
       cmakeTxtSplit = splitString "\n" (builtins.readFile file);
-      findSetVariableStatement = var: builtins.match " *set\\(${var} ?([0-9]*)\)";
+      findSetVariableStatement = var: builtins.match " *set\\(${var} ?([0-9]*)\\)";
       findSetVariableStatementFromList = var: findFirst (str: (findSetVariableStatement var str) != null) null;
       findVersion = kind:
         let
