@@ -13,7 +13,6 @@
 , symlinkJoin
 , zlib
 , curl
-, writeTextDir
 , ldproxy
 , espflash
 , makeWrapper
@@ -34,32 +33,19 @@ let
   rustc-unwrapped' = rustc-unwrapped.override {
     # Rust v1.77 is required to build
     inherit rustc cargo;
-    llvmSharedForBuild = llvmForEsp32;
-    llvmSharedForHost = llvmForEsp32;
     llvmSharedForTarget = llvmForEsp32;
     llvmShared = llvmForEsp32;
   };
 
-  # targets = lib.mapAttrsToList (name: value: writeTextDir "${name}.json" (builtins.toJSON value)) {
-  #   xtensa-esp32s3-espidf = {
-  #     arch = "xtensa";
-  #     cpu = "esp32-s3";
-  #     crt-objects-fallback = "false";
-  #     data-layout = "e-m:e-p:32:32-v1:8:8-i64:64-i128:128-n32";
-  #     emit-debug-gdb-scripts = false;
-  #     env = "newlib";
-  #     linker = "${llvmForEsp32}/bin/clang";
-  #     linker-flavor = "gnu-cc";
-  #     llvm-target = "xtensa-none-elf";
-  #     max-atomic-width = 32;
-  #     os = "espidf";
-  #     panic-strategy = "abort";
-  #     relocation-model = "static";
-  #     target-family = [ "unix" ];
-  #     target-pointer-width = "32";
-  #     vendor = "espressif";
-  #   };
-  # };
+  targets = [
+    "xtensa-esp32-espidf"
+    "xtensa-esp32-none-elf"
+    "xtensa-esp32s2-espidf"
+    "xtensa-esp32s2-none-elf"
+    "xtensa-esp32s3-espidf"
+    "xtensa-esp32s3-none-elf"
+    "xtensa-esp8266-none-elf"
+  ];
 
   rust = rustc-unwrapped'.overrideAttrs
     (final: prev:
@@ -94,7 +80,6 @@ let
             ln -s ${vendors} vendor
             export VERBOSE=1
             # export RUST_BACKTRACE=1
-            # export CARGO_PROFILE_RELEASE_BUILD_OVERRIDE_DEBUG=true
           '' + prev.prePatch or "";
 
         configureFlags =
@@ -112,29 +97,11 @@ let
             "--release-channel=nightly"
             "--enable-extended"
             "--tools=clippy,cargo,src,rust-src,rustfmt,rust-analyzer-proc-macro-srv"
-            # "--enable-lld"
-
-            # "--enable-llvm-bitcode-linker"
-            # "--enable-clang"
-            # "--enable-use-libcxx"
-
-            # "--enable-cargo-native-static"
-
-            "--llvm-root=${llvmForEsp32}"
-
-            # "--default-linker=${llvmForEsp32}/bin/clang"
+            # "--llvm-root=${llvmForEsp32}"
           ] ++ builtins.map
             (input: with input; "--set=target.${target}.${option}")
             (lib.cartesianProduct {
-              target = [
-                "xtensa-esp32-espidf"
-                "xtensa-esp32-none-elf"
-                "xtensa-esp32s2-espidf"
-                "xtensa-esp32s2-none-elf"
-                "xtensa-esp32s3-espidf"
-                "xtensa-esp32s3-none-elf"
-                "xtensa-esp8266-none-elf"
-              ];
+              target = targets;
               option = [
                 "cc=${llvmForEsp32}/bin/clang"
                 "cxx=${llvmForEsp32}/bin/clang++"
@@ -155,16 +122,14 @@ stdenv.mkDerivation {
   nativeBuildInputs = [ makeWrapper ];
 
   passthru = {
-    # targets = targets;
     unwrapped = rust;
+    inherit targets;
   };
 
   buildPhase =
     let
       addPath = "--prefix PATH : ${lib.makeBinPath [rust ldproxy espflash]}";
       addLibClang = "--prefix LIBCLANG_PATH : ${lib.makeLibraryPath [llvmForEsp32]}";
-      # addTargets = "--prefix RUST_TARGET_PATH : ${lib.concatStringsSep ":" targets}";
-      # configureTargets = ''--add-flags "--config=\"target.'cfg(all(target_arch = \"xtensa\"))'.linker='${llvmForEsp32}/bin/clang'\""'';
     in
     ''
       makeWrapper ${rust}/bin/rustc $out/bin/rustc ${addPath} ${addLibClang}
