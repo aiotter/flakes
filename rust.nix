@@ -9,6 +9,7 @@
 , src
 , rev ? null
 , hash ? null
+, vendor ? false
 , fetchFromGitHub
 , symlinkJoin
 , zlib
@@ -16,8 +17,9 @@
 , ldproxy
 , espflash
 , makeWrapper
-, vendor ? false
+, runCommand
 , stdenv
+, lndir
 }:
 
 let
@@ -107,37 +109,56 @@ let
                 "cxx=${llvmForEsp32}/bin/clang++"
                 "linker=${llvmForEsp32}/bin/clang"
                 # "crt-static=${lib.boolToString buildPlatform.isStatic}"
-                "llvm-config=${llvmForEsp32}/bin/llvm-config"
+                "llvm-config=${llvmForEsp32.dev}/bin/llvm-config"
               ];
             });
 
         nativeBuildInputs = [ zlib curl ] ++ prev.nativeBuildInputs;
       });
+
+  wrapped = stdenv.mkDerivation
+    {
+      pname = "${rust.pname}-wrapper";
+      inherit (rust) version;
+      nativeBuildInputs = [ makeWrapper lndir ];
+      outputs = [ "out" "sysroot" ];
+
+      passthru = {
+        unwrapped = rust;
+        inherit targets;
+      };
+
+      meta = rust.meta // {
+        outputsToInstall = [ "out" ];
+        description = "${rust.meta.description} (wrapper script)";
+        priority = 10;
+      };
+
+      dontUnpack = true;
+      buildPhase =
+        let
+          addPath = "--prefix PATH : ${lib.makeBinPath [rust ldproxy espflash]}";
+          addNativeDarwinCC = lib.optionalString stdenv.isDarwin "--prefix PATH : /usr/bin";
+          addLibClang = "--prefix LIBCLANG_PATH : ${lib.makeLibraryPath [llvmForEsp32]}";
+        in
+        ''
+          mkdir -p $out/bin
+          ln -s ${rust}/bin/* $out/bin
+          rm $out/bin/{rustc,cargo}
+
+          makeWrapper ${rust}/bin/rustc $out/bin/rustc ${addPath} ${addNativeDarwinCC} ${addLibClang}
+          makeWrapper ${rust}/bin/cargo $out/bin/cargo ${addPath} ${addNativeDarwinCC} ${addLibClang}
+
+          mkdir $sysroot
+          lndir ${rust} $sysroot
+          rm -rf $sysroot/bin
+          ln -s $out/bin $sysroot/bin
+        '';
+
+      doCheck = true;
+      checkPhase = ''
+        $out/bin/rustc -Z unstable-options --print=all-target-specs-json >/dev/null
+      '';
+    };
 in
-stdenv.mkDerivation {
-  pname = "${rust}-wrapper";
-  inherit (rust) version;
-  dontUnpack = true;
-
-  nativeBuildInputs = [ makeWrapper ];
-
-  passthru = {
-    unwrapped = rust;
-    inherit targets;
-  };
-
-  buildPhase =
-    let
-      addPath = "--prefix PATH : ${lib.makeBinPath [rust ldproxy espflash]}";
-      addLibClang = "--prefix LIBCLANG_PATH : ${lib.makeLibraryPath [llvmForEsp32]}";
-    in
-    ''
-      makeWrapper ${rust}/bin/rustc $out/bin/rustc ${addPath} ${addLibClang}
-      makeWrapper ${rust}/bin/cargo $out/bin/cargo ${addPath} ${addLibClang}
-    '';
-
-  doCheck = true;
-  checkPhase = ''
-    $out/bin/rustc -Z unstable-options --print=all-target-specs-json >/dev/null
-  '';
-}
+wrapped

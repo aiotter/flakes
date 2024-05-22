@@ -39,9 +39,33 @@
             rustPackages = pkgs.rustPackages_1_77;
             src = esp-rust;
             vendor = true;
-            llvmForEsp32 = self.packages.${system}.llvm.overrideAttrs {
-              passthru.dev = self.packages.${system}.llvm;
-            };
+            llvmForEsp32 = self.packages.${system}.llvm;
+          };
+        };
+
+        apps.${system} = {
+          default = self.apps.${system}.install;
+
+          install = {
+            type = "app";
+            program = pkgs.lib.getExe (pkgs.writeShellApplication {
+              name = "install-esp32-toolchain";
+              # runtimeInputs = [ pkgs.rustup ];
+              text = ''
+                printf "esp-rust is installed to: "
+                # rustup toolchain link esp ${self.packages.${system}.rust.sysroot}
+                mkdir -p "''${RUSTUP_HOME:-$HOME/.rustup}/toolchains"
+                nix-store --add-root "''${RUSTUP_HOME:-$HOME/.rustup}/toolchains/esp" --realise ${self.packages.${system}.rust.sysroot}
+              '';
+            });
+          };
+
+          uninstall = {
+            type = "app";
+            program = pkgs.lib.getExe (pkgs.writeShellApplication {
+              name = "uninstall-esp32-toolchain";
+              text = "rm -v \"\${RUSTUP_HOME:-$HOME/.rustup}/toolchains/esp\"";
+            });
           };
         };
       });
