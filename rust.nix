@@ -140,14 +140,15 @@ let
           addPath = "--prefix PATH : ${lib.makeBinPath [rust ldproxy espflash]}";
           addNativeDarwinCC = lib.optionalString stdenv.isDarwin "--prefix PATH : /usr/bin";
           addLibClang = "--prefix LIBCLANG_PATH : ${lib.makeLibraryPath [llvmForEsp32]}";
+          commonFlags = lib.concatStringsSep " " [addPath addNativeDarwinCC addLibClang];
         in
         ''
           mkdir -p $out/bin
           ln -s ${rust}/bin/* $out/bin
           rm $out/bin/{rustc,cargo}
 
-          makeWrapper ${rust}/bin/rustc $out/bin/rustc ${addPath} ${addNativeDarwinCC} ${addLibClang}
-          makeWrapper ${rust}/bin/cargo $out/bin/cargo ${addPath} ${addNativeDarwinCC} ${addLibClang}
+          makeWrapper ${rust}/bin/rustc $out/bin/rustc ${commonFlags}
+          makeWrapper ${rust}/bin/cargo $out/bin/cargo ${commonFlags}
 
           mkdir $sysroot
           lndir ${rust} $sysroot
