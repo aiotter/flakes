@@ -37,7 +37,7 @@ let
     # https://gist.github.com/MabezDev/26e175790f84f2f2b0f9bca4e63275d1
     cmakeFlags = [
       # "-DLLVM_ENABLE_PROJECTS=clang;libc;libclc;lld"
-      "-DLLVM_ENABLE_PROJECTS=clang;lld"
+      "-DLLVM_ENABLE_PROJECTS=clang;libc;lld"
       "-DLLVM_INSTALL_UTILS=ON"
       "-DLLVM_EXPERIMENTAL_TARGETS_TO_BUILD=Xtensa"
       # "-DCMAKE_BUILD_TYPE=Release"
