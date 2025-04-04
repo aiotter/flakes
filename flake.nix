@@ -4,12 +4,16 @@
   };
 
   outputs = { self, nixpkgs }: {
+    overlays.default = final: prev: { inherit (self.packages.${final.system}) reload; };
+
     packages = nixpkgs.lib.genAttrs nixpkgs.lib.systems.flakeExposed (system:
       let
         pkgs = import nixpkgs { inherit system; };
       in
-      {
-        default = pkgs.buildNpmPackage {
+      rec {
+        default = reload;
+
+        reload = pkgs.buildNpmPackage {
           pname = "reload";
           version = "4.7.0";
           src = pkgs.fetchFromGitHub {
