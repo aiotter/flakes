@@ -21,23 +21,23 @@
           pkgs = import nixpkgs { inherit system; };
           pythonPackage = pkgs.python310Packages;
         in
-        rec {
-          packages.default = pythonPackage.buildPythonPackage rec {
+        {
+          packages.default = pythonPackage.buildPythonPackage {
             pname = "youtube-dl";
             version = with youtube-dl; "${builtins.substring 0 4 lastModifiedDate}.${builtins.substring 4 2 lastModifiedDate}.${builtins.substring 6 2 lastModifiedDate}+unstable.${youtube-dl.shortRev}";
             src = youtube-dl;
 
-            patches = [
-              (builtins.toFile "version.patch" ''
-                --- a/youtube_dl/version.py
-                +++ b/youtube_dl/version.py
-                @@ -1,3 +1,3 @@
-                 from __future__ import unicode_literals
+            # patches = [
+            #   (builtins.toFile "version.patch" ''
+            #     --- a/youtube_dl/version.py
+            #     +++ b/youtube_dl/version.py
+            #     @@ -1,3 +1,3 @@
+            #      from __future__ import unicode_literals
 
-                -__version__ = '2021.12.17'
-                +__version__ = '${version}'
-              '')
-            ];
+            #     -__version__ = '2021.12.17'
+            #     +__version__ = '${version}'
+            #   '')
+            # ];
 
             nativeBuildInputs = with pkgs; [ installShellFiles makeWrapper ];
             buildInputs = with pkgs; [ zip atomicparsley ffmpeg rtmpdump ];
