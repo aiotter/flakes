@@ -1,24 +1,24 @@
-{ lib, stdenv, system, darwin, fetchFromGitHub, fetchurl, zlib, libedit, pkgconf, cryptsetup, zfs, json_c, linux-pam, openssl, pcsclite, libbsd }:
+{ lib, stdenv, fetchFromGitHub, fetchurl, zlib, libedit, ragel, pkgconf, cryptsetup, zfs, json_c, linux-pam, openssl, pcsclite, libbsd }:
 
 stdenv.mkDerivation rec {
   pname = "pivy";
-  version = "v0.11.2";
+  version = "v0.12.0";
   srcs = [
     (fetchFromGitHub {
       owner = "arekinath";
       repo = "pivy";
       rev = version;
-      hash = "sha256-FEIIZTtFXN+vBz/kVsRIgj1vSJ/m8vcug1mVBLgTbnU=";
+      hash = "sha256-BVUPKAmKdYGWp4/SCPtRqYlMh3grGQ5xnwMffpMbEE4=";
     })
     (fetchurl rec {
-      version = "9.5p1";
+      version = "9.9p1";
       url = "mirror://openbsd/OpenSSH/portable/openssh-${version}.tar.gz";
-      hash = "sha256-8Cbnt5un+1QPdRgq+W3IqPHbOV+SK7yfbKYDZyaGCGs=";
+      hash = "sha256-s0P7zb/4fxWxmG5uFdbU/Jp9NgZr5rf7UHCHuo+WbAI=";
     })
     (fetchurl rec {
-      version = "3.8.2";
+      version = "3.9.2";
       url = "mirror://openbsd/LibreSSL/libressl-${version}.tar.gz";
-      hash = "sha256-bUuNW7slofgzZjnlbsUIgFLUOpUlZpeoXEzpEyPCWVQ=";
+      hash = "sha256-ewMdrGSlnrbuMwT3/7ddrTOrjJ0nnIR/ksifuEYGj5c=";
     })
   ];
 
@@ -31,7 +31,7 @@ stdenv.mkDerivation rec {
   '';
 
   patchPhase = ''
-    substituteInPlace Makefile --replace '-o $(binowner) -g $(bingroup) ' '''
+    substituteInPlace Makefile --replace-warn '-o $(binowner) -g $(bingroup) ' '''
   '';
 
 
@@ -39,16 +39,15 @@ stdenv.mkDerivation rec {
 
   preBuild =
     let
-      systemCpuName = (lib.systems.parse.mkSystemFromString system).cpu.name;
-      arch = if systemCpuName == "aarch64" then "arm64" else systemCpuName;
+      hostCpuName = (lib.systems.parse.mkSystemFromString stdenv.hostPlatform.system).cpu.name;
+      arch = if hostCpuName == "aarch64" then "arm64" else hostCpuName;
     in
     lib.optionals stdenv.isDarwin ''
       makeFlagsArray+=(SYSTEM_CFLAGS="-arch ${arch}" SYSTEM_LDFLAGS="-arch ${arch}")
     '';
 
-  nativeBuildInputs = [ zlib libedit ] ++ lib.optionals stdenv.isLinux [ pkgconf cryptsetup zfs json_c linux-pam ];
-  buildInputs = lib.optionals stdenv.isLinux [ openssl pcsclite libbsd ]
-    ++ lib.optionals stdenv.isDarwin (with darwin.apple_sdk_11_0; [ frameworks.PCSC ]);
+  nativeBuildInputs = [ zlib libedit ragel ] ++ lib.optionals stdenv.isLinux [ pkgconf cryptsetup zfs json_c linux-pam ];
+  buildInputs = lib.optionals stdenv.isLinux [ openssl pcsclite libbsd ];
 
   installFlags = [ "DESTDIR=$(out)" "prefix=" ];
 
