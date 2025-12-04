@@ -1,4 +1,4 @@
-{ lib, stdenv, fetchFromGitHub, fetchurl, zlib, libedit, ragel, pkgconf, cryptsetup, zfs, json_c, linux-pam, openssl, pcsclite, libbsd }:
+{ lib, stdenv, fetchFromGitHub, fetchurl, fetchpatch, zlib, libedit, ragel, pkgconf, cryptsetup, zfs, json_c, linux-pam, openssl, pcsclite, libbsd }:
 
 stdenv.mkDerivation rec {
   pname = "pivy";
@@ -30,10 +30,17 @@ stdenv.mkDerivation rec {
     touch "$sourceRoot/.libressl.extract"
   '';
 
-  patchPhase = ''
+  patches = [
+    # https://github.com/arekinath/pivy/issues/52
+    (fetchpatch {
+      url = "https://github.com/arekinath/pivy/commit/482e5d52449a4201deaf5b858158c149755ca0e5.patch";
+      hash = "sha256-k9JZkdd++92wDCyy2KbuCR8ue5S7ufqxhPOm0aws9ts=";
+    })
+  ];
+
+  postPatch = ''
     substituteInPlace Makefile --replace-warn '-o $(binowner) -g $(bingroup) ' '''
   '';
-
 
   dontConfigure = true;
 
