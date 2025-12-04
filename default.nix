@@ -1,4 +1,21 @@
-{ lib, stdenv, fetchFromGitHub, fetchurl, fetchpatch, zlib, libedit, ragel, pkgconf, cryptsetup, zfs, json_c, linux-pam, openssl, pcsclite, libbsd }:
+{
+  lib,
+  stdenv,
+  fetchFromGitHub,
+  fetchurl,
+  fetchpatch,
+  zlib,
+  libedit,
+  ragel,
+  pkgconf,
+  cryptsetup,
+  zfs,
+  json_c,
+  linux-pam,
+  openssl,
+  pcsclite,
+  libbsd,
+}:
 
 stdenv.mkDerivation rec {
   pname = "pivy";
@@ -53,10 +70,29 @@ stdenv.mkDerivation rec {
       makeFlagsArray+=(SYSTEM_CFLAGS="-arch ${arch}" SYSTEM_LDFLAGS="-arch ${arch}")
     '';
 
-  nativeBuildInputs = [ zlib libedit ragel ] ++ lib.optionals stdenv.isLinux [ pkgconf cryptsetup zfs json_c linux-pam ];
-  buildInputs = lib.optionals stdenv.isLinux [ openssl pcsclite libbsd ];
+  nativeBuildInputs = [
+    zlib
+    libedit
+    ragel
+  ]
+  ++ lib.optionals stdenv.isLinux [
+    pkgconf
+    cryptsetup
+    zfs
+    json_c
+    linux-pam
+  ];
 
-  installFlags = [ "DESTDIR=$(out)" "prefix=" ];
+  buildInputs = lib.optionals stdenv.isLinux [
+    openssl
+    pcsclite
+    libbsd
+  ];
+
+  installFlags = [
+    "DESTDIR=$(out)"
+    "prefix="
+  ];
 
   meta = with lib; {
     description = "Tools for using PIV tokens (like Yubikeys) as an SSH agent, for encrypting data at rest, and more";
