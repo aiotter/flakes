@@ -46,6 +46,7 @@
           latest = default.overrideAttrs (prev: {
             version = getVersion pivy;
             srcs = [ pivy ] ++ pkgs.lib.drop 1 prev.srcs;
+            patches = [ ];
           });
         };
       }
