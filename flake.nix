@@ -2,7 +2,7 @@
   description = "youtube-dl";
 
   inputs = {
-    nixpkgs.url = "nixpkgs/nixpkgs-unstable";
+    nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
     flake-utils.url = "github:numtide/flake-utils";
     youtube-dl = {
       url = "github:ytdl-org/youtube-dl/master";
@@ -26,6 +26,9 @@
             pname = "youtube-dl";
             version = with youtube-dl; "${builtins.substring 0 4 lastModifiedDate}.${builtins.substring 4 2 lastModifiedDate}.${builtins.substring 6 2 lastModifiedDate}+unstable.${youtube-dl.shortRev}";
             src = youtube-dl;
+
+            pyproject = true;
+            build-system = [ pythonPackage.setuptools ];
 
             # patches = [
             #   (builtins.toFile "version.patch" ''

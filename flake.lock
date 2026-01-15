@@ -20,17 +20,18 @@
     },
     "nixpkgs": {
       "locked": {
-        "lastModified": 1744316434,
-        "narHash": "sha256-lzFCg/1C39pyY2hMB2gcuHV79ozpOz/Vu15hdjiFOfI=",
+        "lastModified": 1768395095,
+        "narHash": "sha256-ZhuYJbwbZT32QA95tSkXd9zXHcdZj90EzHpEXBMabaw=",
         "owner": "NixOS",
         "repo": "nixpkgs",
-        "rev": "d19cf9dfc633816a437204555afeb9e722386b76",
+        "rev": "13868c071cc73a5e9f610c47d7bb08e5da64fdd5",
         "type": "github"
       },
       "original": {
-        "id": "nixpkgs",
+        "owner": "NixOS",
         "ref": "nixpkgs-unstable",
-        "type": "indirect"
+        "repo": "nixpkgs",
+        "type": "github"
       }
     },
     "root": {
@@ -58,11 +59,11 @@
     "youtube-dl": {
       "flake": false,
       "locked": {
-        "lastModified": 1744073940,
-        "narHash": "sha256-1dVXKBpidI2mnotAD1SXlx6x0GgejWfVMOjKuv2F6qs=",
+        "lastModified": 1764126156,
+        "narHash": "sha256-/nHyick3/K5/xFxsEuQTjZDeZ/Un+UsiW9S+9fKvtzw=",
         "owner": "ytdl-org",
         "repo": "youtube-dl",
-        "rev": "c052a16f72af7dd7671d4dd62826de71cd99dfb6",
+        "rev": "956b8c585591b401a543e409accb163eeaaa1193",
         "type": "github"
       },
       "original": {
